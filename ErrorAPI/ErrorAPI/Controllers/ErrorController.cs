@@ -1,6 +1,5 @@
 ﻿using ErrorAPI.Data;
 using ErrorAPI.DTO;
-using ErrorAPI.Models;
 using ErrorAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ErrorManagerAPI.Controllers
+namespace ErrorAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -52,7 +51,7 @@ namespace ErrorManagerAPI.Controllers
             }
         }
 
-        // GET: api/errors/5
+        // GET: api/errors/
         [HttpGet("{id}")]
         public async Task<ActionResult<ErrorDto>> GetError(int id)
         {
@@ -70,14 +69,14 @@ namespace ErrorManagerAPI.Controllers
                 Description = error.Description
             });
         }
-
+        // GET: api/errors/byCode
         [HttpGet("byCode")]
         public async Task<IActionResult> GetErrorsByCode([FromQuery] string errorCode)
         {
             var errors = await _repository.GetErrorsByCodeAsync(errorCode);
             return Ok(errors);
         }
-
+        // GET: api/errors/byDescription
         [HttpGet("byDescription")]
         public async Task<IActionResult> GetErrorsByDescription([FromQuery] string description)
         {
@@ -90,7 +89,7 @@ namespace ErrorManagerAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<ErrorDto>> PostError(ErrorDto errorDTO)
         {
-            var error = new Error
+            var error = new ErrorDto
             {
                 ErrorCode = errorDTO.ErrorCode,
                 Category = errorDTO.Category,
@@ -111,7 +110,7 @@ namespace ErrorManagerAPI.Controllers
                 return BadRequest();
             }
 
-            var error = new Error
+            var error = new ErrorDto
             {
                 Id = errorDTO.Id,
                 ErrorCode = errorDTO.ErrorCode,

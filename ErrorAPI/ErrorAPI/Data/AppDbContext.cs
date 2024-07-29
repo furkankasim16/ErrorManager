@@ -1,4 +1,4 @@
-﻿using ErrorAPI.Models;
+﻿using ErrorAPI.DTO;
 using Microsoft.EntityFrameworkCore;
 namespace ErrorAPI.Data
 {
@@ -7,6 +7,6 @@ namespace ErrorAPI.Data
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options) { 
         }
-        public DbSet<Error> Errors { get; set; }
+        public DbSet<ErrorDto> Errors { get; set; }
     }
 }

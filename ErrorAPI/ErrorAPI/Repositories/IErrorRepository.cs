@@ -1,4 +1,4 @@
-﻿using ErrorAPI.Models;
+﻿using ErrorAPI.DTO;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,14 +7,14 @@ namespace ErrorAPI.Repositories
 {
     public interface IErrorRepository
     {
-        Task<List<Error>> GetErrorsByCodeAsync(string errorCode);
-        Task<List<Error>> GetErrorsByDescriptionAsync(string description);
-        Task<IEnumerable<Error>> GetErrorsAsync(string code = null, string description = null);
-        Task<Error> GetErrorByIdAsync(int id);
-        Task<IEnumerable<Error>> GetErrorsByCategoryAsync(string category);
-        Task AddErrorAsync(Error error);
-        Task<bool> UpdateErrorAsync(Error error);
+        Task<List<ErrorDto>> GetErrorsByCodeAsync(string errorCode);
+        Task<List<ErrorDto>> GetErrorsByDescriptionAsync(string description);
+        Task<IEnumerable<ErrorDto>> GetErrorsAsync(string code = null, string description = null);
+        Task<ErrorDto> GetErrorByIdAsync(int id);
+        Task<IEnumerable<ErrorDto>> GetErrorsByCategoryAsync(string category);
+        Task AddErrorAsync(ErrorDto error);
+        Task<bool> UpdateErrorAsync(ErrorDto error);
         Task<bool> DeleteErrorAsync(int id);
-        Task<IEnumerable<Error>> GetAllErrorsAsync();
+        Task<IEnumerable<ErrorDto>> GetAllErrorsAsync();
     }
 }

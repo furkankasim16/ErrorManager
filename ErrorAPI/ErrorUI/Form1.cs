@@ -75,10 +75,15 @@ namespace ErrorUI
             });
         }
 
-        private async void button1_Click(object sender, EventArgs e)
+        private async void SrchByCode(object sender, EventArgs e)
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(textBox1.Text))
+                {
+                    MessageBox.Show("Bu işlem için ErrorCode alanının doldurulması gereklidir");
+                    return;
+                }
                 string code = Uri.EscapeDataString(textBox1.Text); // URL encode
                 HttpResponseMessage response = await client.GetAsync($"https://localhost:7165/api/errors/byCode?errorCode={code}");
 
@@ -107,10 +112,15 @@ namespace ErrorUI
             }
         }
 
-        private async void button2_Click(object sender, EventArgs e)
+        private async void SrchByDesc(object sender, EventArgs e)
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(richTextBox1.Text))
+                {
+                    MessageBox.Show("Bu işlem için Description alanının doldurulması gereklidir");
+                    return;
+                }
                 string description = Uri.EscapeDataString(richTextBox1.Text); // URL encode
                 HttpResponseMessage response = await client.GetAsync($"https://localhost:7165/api/errors/byDescription?description={description}");
 
@@ -139,13 +149,17 @@ namespace ErrorUI
             }
         }
 
-        private async void button3_Click(object sender, EventArgs e)
+        private async void Add(object sender, EventArgs e)
         {
             try
             {
-                var error = new ErrorDto
+            if (string.IsNullOrWhiteSpace(textBox1.Text) || string.IsNullOrWhiteSpace(textBox2.Text) || string.IsNullOrWhiteSpace(textBox3.Text) || string.IsNullOrWhiteSpace(richTextBox1.Text))
+            {
+                MessageBox.Show("bu işlem için tüm alanların doldurulması gereklidir");
+                return;
+            }
+            var error = new ErrorDto
                 {
-                    Id = Convert.ToInt32(textBox3.Text),
                     ErrorCode = textBox1.Text,
                     Description = richTextBox1.Text,
                     Category = textBox2.Text
@@ -169,7 +183,7 @@ namespace ErrorUI
             }
         }
 
-        private async void button4_Click(object sender, EventArgs e)
+        private async void Update(object sender, EventArgs e)
         {
             try
             {
@@ -181,6 +195,11 @@ namespace ErrorUI
                     Description = richTextBox1.Text,
                     Category = textBox2.Text
                 };
+                if (string.IsNullOrWhiteSpace(textBox1.Text) || string.IsNullOrWhiteSpace(textBox2.Text) || string.IsNullOrWhiteSpace(textBox3.Text)|| string.IsNullOrWhiteSpace(richTextBox1.Text))
+                {
+                    MessageBox.Show("bu işlem için tüm alanların doldurulması gereklidir");
+                    return;
+                }
                 var content = new StringContent(JsonConvert.SerializeObject(error), Encoding.UTF8, "application/json");
                 HttpResponseMessage response = await client.PutAsync($"https://localhost:7165/api/errors/{id}", content);
                 if (response.IsSuccessStatusCode)
@@ -200,10 +219,15 @@ namespace ErrorUI
             }
         }
 
-        private async void button5_Click(object sender, EventArgs e)
+        private async void Delete(object sender, EventArgs e)
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(textBox3.Text) == null)
+                {
+                    MessageBox.Show("Bu işlem için bir ID girmeniz gerekmetedir.Lütfen ID giriniz.");
+                    return;
+                }
                 int id = Convert.ToInt32(textBox3.Text);
                 HttpResponseMessage response = await client.DeleteAsync($"https://localhost:7165/api/errors/{id}");
                 if (response.IsSuccessStatusCode)
@@ -227,12 +251,12 @@ namespace ErrorUI
 
         }
 
-        private void button6_Click(object sender, EventArgs e)
+        private void Refresh(object sender, EventArgs e)
         {
             GetAllErrors();
         }
 
-        private async void button7_Click(object sender, EventArgs e)
+        private async void Search(object sender, EventArgs e)
         {
             try
             {
@@ -290,6 +314,24 @@ namespace ErrorUI
             {
                 MessageBox.Show($"Exception: {ex.Message}");
             }
+        }
+
+        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Eğer başlık satırı tıklanmışsa, hiçbir şey yapma
+            if (e.RowIndex == -1)
+            {
+                return;
+            }
+
+            // Seçili satırın verilerini al
+            DataGridViewRow selectedRow = dataGridView1.Rows[e.RowIndex];
+
+            // Verileri ilgili TextBox ve RichTextBox kontrollerine doldur
+            textBox3.Text = selectedRow.Cells["Id"].Value.ToString();
+            textBox1.Text = selectedRow.Cells["ErrorCode"].Value.ToString();
+            richTextBox1.Text = selectedRow.Cells["Description"].Value.ToString();
+            textBox2.Text = selectedRow.Cells["Category"].Value.ToString();
         }
     }
 }
